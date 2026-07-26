@@ -54,19 +54,43 @@ Spring Boot ──► GMS (LLM API) / GPT 모델
 
 ## 📁 저장소 구성
 
-| 경로 | 설명 |
+```
+├─ docs/                  설계·명세 문서
+├─ log_analysis/scenario/ 로그 분석용 게임 로그 픽스처
+├─ images/                아키텍처도 · 아이템 상태표 · 테스트 이미지
+├─ mafia_ai_prototype.ipynb
+└─ (예정) spring-ai/      AI 기능 Spring 구현
+```
+
+### 📄 문서 (`docs/`)
+
+| 파일 | 설명 |
 |---|---|
-| [docs/기능명세서.md](docs/기능명세서.md) | 팀 전체 기능 명세 (Task 1~21) |
-| [docs/AI기능-구현설계.md](docs/AI기능-구현설계.md) | **AI 파트 구현 설계** — 로그 스키마, 얼굴 분석, 아이템, 프롬프트 방침 |
-| [docs/AI-API명세.md](docs/AI-API명세.md) | **AI 파트 REST·WebSocket 계약** — 팀 API 명세서 반영용 |
-| [docs/API명세-참고사항.md](docs/API명세-참고사항.md) | 위 계약 반영 시 놓치면 문제되는 항목 + 백엔드 확인 사항 |
-| [docs/기술스택-검토.md](docs/기술스택-검토.md) | 스택 타당성, Vue/Spring 작업 분담, Spring 프로젝트 구성 방침 |
-| [docs/결정필요사항.md](docs/결정필요사항.md) | 팀 논의 12건(1건 확정) + 단독 결정 항목 |
-| [docs/학습로드맵.md](docs/학습로드맵.md) | AI 코드가 의존하는 WebRTC·WS·Spring AI 학습 범위 |
-| [docs/todo.md](docs/todo.md) | 작업 목록 |
-| [images/](images/) | 시스템 아키텍처, 아이템 상태표, 테스트용 이미지 |
-| `mafia_ai_prototype.ipynb` | 초기 실현성 검증 기록 (아래 참고) |
-| *(예정)* `spring-ai/` | **AI 기능 Spring 구현** — 팀 레포로 이식 예정 |
+| [기능명세서.md](docs/기능명세서.md) | 팀 전체 기능 명세 (Task 1~21) |
+| [AI기능-구현설계.md](docs/AI기능-구현설계.md) | **AI 파트 구현 설계** — 로그 스키마, 얼굴 분석, AI 심판, 칭호, 아이템 |
+| [AI-API명세.md](docs/AI-API명세.md) | **REST·WebSocket 계약** — 팀 API 명세서 반영용 |
+| [API명세-참고사항.md](docs/API명세-참고사항.md) | 위 계약 반영 시 놓치면 문제되는 항목 + 백엔드 확인 사항 |
+| [기술스택-검토.md](docs/기술스택-검토.md) | 스택 타당성, Vue/Spring 작업 분담, Spring 프로젝트 구성 방침 |
+| [결정필요사항.md](docs/결정필요사항.md) | 팀 논의 12건(1건 확정) + 단독 결정 항목 |
+| [학습로드맵.md](docs/학습로드맵.md) | AI 코드가 의존하는 WebRTC·WS·Spring AI 학습 범위 |
+| [todo.md](docs/todo.md) | 작업 목록 |
+
+### 🧪 로그 픽스처 (`log_analysis/scenario/`)
+
+Redis 연결 전까지 사용할 **샘플 게임 로그**. 6인 게임(마피아 2 · 시민 4) 3라운드, 시민 승.
+
+| 파일 | 설명 |
+|---|---|
+| [시나리오-설정.md](log_analysis/scenario/시나리오-설정.md) | 플레이어·역할·아이템 배분, 라운드별 진행, 승리 판정 |
+| [발화로그-공개.txt](log_analysis/scenario/발화로그-공개.txt) | 낮 계열 발화 — 조간신문·AI 심판·아이템 2종의 **유일한 입력** |
+| [발화로그-밤마피아.txt](log_analysis/scenario/발화로그-밤마피아.txt) | 밤 마피아 대화 — **칭호에서만 opt-in** (명세 21-2) |
+| [게임이벤트.txt](log_analysis/scenario/게임이벤트.txt) | 투표 내역·사망·아이템 사용·승리 판정 (칭호 지표용) |
+| [테스트-체크리스트.md](log_analysis/scenario/테스트-체크리스트.md) | 픽스처에 심어둔 테스트 케이스 30건 + 미커버 항목 |
+| [로그2안아이디어.txt](log_analysis/scenario/로그2안아이디어.txt) | 다음 시나리오 축 9종, 거짓 주장 유형 8종 |
+| [칭호예시.txt](log_analysis/scenario/칭호예시.txt) | 칭호 후보 16종 |
+
+> ⚠️ **낮 로그와 밤 로그를 파일 단위로 분리**했습니다. 명세 21-2에 따라 밤 마피아 발화는
+> 조간신문·AI 심판·아이템 분석의 입력으로 **절대 사용하지 않습니다.** 한 줄만 새어도 마피아 신원이 노출됩니다.
 
 ---
 
