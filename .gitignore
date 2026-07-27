@@ -1,0 +1,28 @@
+# ===== 비밀 =====
+.env
+.env.local
+*.key
+
+# ===== IDE =====
+# IntelliJ
+.idea/
+*.iml
+# Eclipse / STS
+.settings/
+.classpath
+.project
+bin/
+
+# ===== 빌드 산출물 =====
+.gradle/
+build/
+target/
+
+# ===== OS =====
+Thumbs.db
+.DS_Store
+
+# ===== 기타 =====
+SpringAI-example/
+
+# report/ 는 이전 프로젝트(가계부) 참고 코드다. 커밋할지 미결 → docs/todo.md
