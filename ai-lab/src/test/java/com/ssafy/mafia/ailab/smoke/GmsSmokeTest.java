@@ -20,8 +20,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class GmsSmokeTest {
 
+    /** AiConfig 가 등록한 빈. Builder 가 아니라 ChatClient 를 받는다. */
     @Autowired
-    ChatClient.Builder chatClientBuilder;
+    ChatClient chatClient;
 
     @Value("${spring.ai.openai.base-url}")
     String baseUrl;
@@ -60,7 +61,7 @@ class GmsSmokeTest {
     @DisplayName("3. GMS 를 통해 실제로 응답이 오는가")
     void 평문_호출() {
         long t = System.currentTimeMillis();
-        String answer = chatClientBuilder.build()
+        String answer = chatClient
                 .prompt()
                 .user("핑이라고만 답해")
                 .call()
@@ -74,7 +75,7 @@ class GmsSmokeTest {
     @Test
     @DisplayName("4. 한글 프롬프트가 왕복해도 멀쩡한가")
     void 한글_왕복() {
-        String answer = chatClientBuilder.build()
+        String answer = chatClient
                 .prompt()
                 .system("너는 한국어로만 답한다. 사용자가 준 단어를 그대로 되돌려준다.")
                 .user("이 단어를 그대로 다시 말해줘: 시간 낭비")

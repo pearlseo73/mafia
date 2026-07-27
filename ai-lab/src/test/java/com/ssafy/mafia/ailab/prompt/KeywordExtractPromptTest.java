@@ -2,17 +2,14 @@ package com.ssafy.mafia.ailab.prompt;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.Resource;
 
+import com.ssafy.mafia.ailab.analysis.keyword.KeywordExtractService;
 import com.ssafy.mafia.ailab.analysis.keyword.KeywordResult;
 import com.ssafy.mafia.ailab.fixture.Utterance;
 import com.ssafy.mafia.ailab.fixture.UtteranceLog;
@@ -20,10 +17,10 @@ import com.ssafy.mafia.ailab.fixture.UtteranceLog;
 /**
  * 키워드 뽑기 프롬프트 검증.
  *
- * <p>기대답안은 문자열 일치 검증용이 아니다 — 형식과 판정을 <b>눈으로</b> 본다.
- * 다만 아래 두 가지는 눈으로 놓치므로 자동 검사로 둔다.
+ * <p>기대답안은 문자열 일치 검증용이 아니다 — 형식과 판정을 <b>콘솔 출력으로 눈으로</b> 본다.
+ * 다만 눈으로 놓치는 두 가지는 자동 검사로 둔다.
  * <ul>
- *   <li>키워드가 입력 발화의 부분 문자열인지 (환각 방어)
+ *   <li>키워드가 입력 발화의 부분 문자열인지 (환각 방어) — 서비스가 이미 걸러내지만 결과를 확인한다
  *   <li>밤 로그 문구가 섞이지 않았는지 (마피아 신원 유출)
  * </ul>
  *
@@ -36,13 +33,7 @@ import com.ssafy.mafia.ailab.fixture.UtteranceLog;
 class KeywordExtractPromptTest {
 
     @Autowired
-    ChatClient.Builder chatClientBuilder;
-
-    @Value("classpath:/prompts/keyword-extract-system.st")
-    Resource systemPrompt;
-
-    @Value("classpath:/prompts/keyword-extract-user.st")
-    Resource userPrompt;
+    KeywordExtractService keywordExtractService;
 
     // ==================================================================
     // TC-8 — 강예린 R1 (핵심 케이스, 픽스처의 실제 사용 기록)
@@ -54,7 +45,6 @@ class KeywordExtractPromptTest {
         print("TC-8 입력", input);
 
         assertThat(input).as("사용 시각 이전 R1 발화 4건").hasSize(4);
-        assertThat(UtteranceLog.hasEnoughToAnalyze(input)).isTrue();
 
         KeywordResult result = extract("강예린", 1, input);
         print("TC-8 출력", result);
@@ -89,7 +79,7 @@ class KeywordExtractPromptTest {
     }
 
     // ==================================================================
-    // TC-9 — 발화 부족 (LLM 을 호출하지 않는다)
+    // TC-9 — 발화 부족 (서비스가 LLM 을 호출하지 않는다)
     // ==================================================================
     @Test
     @DisplayName("TC-9 최지우는 발화가 부족해 LLM 을 호출하지 않는다")
@@ -97,13 +87,11 @@ class KeywordExtractPromptTest {
         List<Utterance> input = UtteranceLog.forKeywordExtract("최지우", 1, "21:03:00");
         print("TC-9 입력", input);
 
-        assertThat(UtteranceLog.hasEnoughToAnalyze(input))
+        assertThat(KeywordExtractService.hasEnoughToAnalyze(UtteranceLog.texts(input)))
                 .as("발화 2건 · 약 25자 → 임계값(3건·40자) 미달")
                 .isFalse();
 
-        KeywordResult result = UtteranceLog.hasEnoughToAnalyze(input)
-                ? extract("최지우", 1, input)
-                : KeywordResult.insufficient();   // 서버가 만든다. LLM 호출 없음
+        KeywordResult result = extract("최지우", 1, input);
         print("TC-9 출력", result);
 
         assertThat(result.hasFindings()).isFalse();
@@ -115,34 +103,16 @@ class KeywordExtractPromptTest {
     // ==================================================================
     private KeywordResult extract(String target, int round, List<Utterance> input) {
         long t = System.currentTimeMillis();
-        KeywordResult result = chatClientBuilder.build()
-                .prompt()
-                .system(s -> s.text(systemPrompt, StandardCharsets.UTF_8))
-                .user(u -> u.text(userPrompt, StandardCharsets.UTF_8)
-                        .param("targetName", target)
-                        .param("round", round)
-                        .param("utterances", UtteranceLog.toPlainLines(input)))
-                .call()
-                .entity(KeywordResult.class);
+        KeywordResult result = keywordExtractService.extract(target, round, UtteranceLog.texts(input));
         System.out.printf("  (%dms)%n", System.currentTimeMillis() - t);
         return result;
     }
 
-    /**
-     * 환각 방어 — 각 키워드가 입력에 실제로 등장하는 연속 문자열인지.
-     * 공백을 제거하고 비교하므로 "시간낭비" 도 "시간 낭비" 에 매칭된다.
-     * 조사·어미를 뗀 "억울" 은 "억울하면" 의 부분 문자열이라 통과한다.
-     */
+    /** 서비스의 환각 필터가 통과시킨 결과가 실제로 원문에 있는지 다시 확인한다. */
     private void assertVerbatim(KeywordResult result, List<Utterance> input) {
-        String haystack = UtteranceLog.toPlainLines(input).replaceAll("\\s", "");
-        for (String keyword : result.keywordsOrEmpty()) {
-            String needle = keyword.replaceAll("\\s", "");
-            if (!haystack.contains(needle)) {
-                System.out.println("  ❌ 원문에 없는 키워드: " + keyword);
-            }
-        }
+        String haystack = String.join("\n", UtteranceLog.texts(input)).replaceAll("\\s", "");
         assertThat(result.keywordsOrEmpty())
-                .as("로그에 없는 표현을 만들어내면 안 된다 (상위 개념어 포함)")
+                .as("로그에 없는 표현이 남아 있으면 안 된다 (상위 개념어 포함)")
                 .allMatch(k -> haystack.contains(k.replaceAll("\\s", "")));
     }
 

@@ -83,18 +83,12 @@ public final class UtteranceLog {
                 .toList();
     }
 
-    /** 프롬프트에 넣을 형태 — 한 줄에 발화 하나, 번호·시각 없이 본문만. */
-    public static String toPlainLines(List<Utterance> utterances) {
-        return utterances.stream().map(Utterance::text).reduce((a, b) -> a + "\n" + b).orElse("");
-    }
-
     /**
-     * 발화가 분석할 만큼 있는지. 미달이면 LLM 을 호출하지 않고 서버가 바로 응답한다 (§7-5).
-     * 비용·지연·환각을 동시에 줄인다.
+     * 서비스에 넘길 형태 — 발화 본문만. 나중에 Redis 가 이 자리를 대신한다.
+     * 임계값 판정·환각 필터는 서버 로직이므로 {@code src/main} 의 서비스에 있다.
      */
-    public static boolean hasEnoughToAnalyze(List<Utterance> utterances) {
-        int chars = utterances.stream().mapToInt(u -> u.text().length()).sum();
-        return utterances.size() >= 3 && chars >= 40;
+    public static List<String> texts(List<Utterance> utterances) {
+        return utterances.stream().map(Utterance::text).toList();
     }
 
     /**

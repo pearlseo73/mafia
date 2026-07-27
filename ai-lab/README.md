@@ -11,8 +11,11 @@
 src/main/                                    ← 팀 레포로 그대로 이식
 ├─ java/com/ssafy/mafia/ailab/
 │  ├─ AiLabApplication.java                    (스캐폴딩, 이식 안 함)
-│  └─ analysis/                                기능별 LLM 출력 계약·서비스
-│     └─ keyword/  KeywordResult.java
+│  ├─ config/AiConfig.java                     ChatClient 빈 등록
+│  └─ analysis/                                기능별 (도메인별 패키지)
+│     └─ keyword/
+│        ├─ KeywordExtractService.java           LLM 호출 · 임계값 · 환각 필터
+│        └─ KeywordResult.java                   LLM 출력 계약 (record)
 └─ resources/
    ├─ application.properties                   GMS 설정
    └─ prompts/*.st                             프롬프트 (정본)
@@ -25,6 +28,10 @@ src/test/                                    ← ai-lab 에만 남는다
 ```
 
 **픽스처 로더를 `test`에 두는 게 중요하다.** `main`에 두면 실서비스 코드가 파일에서 발화 로그를 읽는 경로가 생긴다. 실제로는 Redis(`utt:{roomId}:public`)에서 와야 한다.
+
+반대로 **임계값 판정과 환각 필터는 `main`의 서비스에 있다.** 그것은 테스트 편의가 아니라 서버가 실제로 해야 하는 일이다. 테스트는 입력을 만들어 넘기고 결과를 찍기만 한다.
+
+코드 스타일(Lombok, 패키지 구조, `.st` 사용 이유)은 [docs/개발환경.md §4-1](../docs/개발환경.md)에 정리돼 있다.
 
 ## 실행
 

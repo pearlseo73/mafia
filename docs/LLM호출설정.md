@@ -177,12 +177,28 @@ curl -N $GMS_BASE/api.openai.com/v1/chat/completions \
 
 이전 프로젝트(가계부 앱)와 강사님 예제에서 가져온 것이다. 원본 코드는 `reference/`에 로컬로만 두고 **git에 커밋하지 않으므로**(남의 저작물) 필요한 조각을 여기에 옮겨 적는다.
 
+### 빈 등록 — `ChatClient.Builder` 가 아니라 `ChatClient` 를 주입받는다
+
+```java
+@Configuration
+public class AiConfig {
+    @Bean
+    public ChatClient chatClient(ChatClient.Builder builder) {
+        return builder.build();
+    }
+}
+```
+
+스타터가 자동으로 등록해주는 것은 `Builder`다. 그것을 **한 번만** `build()` 해서 `ChatClient` 빈으로 등록하고, 쓰는 쪽에서는 `ChatClient`를 받는다. 호출마다 `build()` 하지 않는다. 강사님 예제가 이 방식이다.
+
+기능별로 모델·파라미터가 달라야 하는 경우도 빈을 여러 개 만들지 않고 호출 시 `.options(OpenAiChatOptions.builder()...build())`로 덮어쓴다 (§4).
+
 ### 구조화 출력 — 진술대조 · 키워드 · 칭호
 
 ```java
 KeywordResult r = chatClient.prompt()
-        .system(s -> s.text(systemPrompt, StandardCharsets.UTF_8))
-        .user(u -> u.text(userPrompt, StandardCharsets.UTF_8)
+        .system(s -> s.text(SYSTEM_PROMPT, StandardCharsets.UTF_8))
+        .user(u -> u.text(USER_PROMPT, StandardCharsets.UTF_8)
                 .param("targetName", target)
                 .param("round", round)
                 .param("utterances", lines))
@@ -190,9 +206,33 @@ KeywordResult r = chatClient.prompt()
         .entity(KeywordResult.class);
 ```
 
-- 프롬프트는 `.st` 리소스로 빼고 `@Value("classpath:/prompts/...")`로 주입한다. 자바 문자열에 박으면 고칠 때마다 재컴파일이다
 - **`text(resource, StandardCharsets.UTF_8)` — 인자 2개짜리를 쓴다.** 1개짜리는 플랫폼 기본 인코딩을 타서 한글 프롬프트가 깨질 수 있다
-- 호출별로 모델·파라미터를 덮어쓰려면 `.options(OpenAiChatOptions.builder()...build())`
+- 리소스는 `new ClassPathResource("prompts/...")`로 `static final` 상수로 두면 `@Value` 필드 주입과 `@RequiredArgsConstructor`를 섞지 않아도 된다
+
+### 프롬프트는 `.st` 파일로 뺀다 — 강사님 예제와 의도적으로 다른 부분
+
+강사님 예제는 시스템 프롬프트를 클래스 안에 텍스트 블록으로 둔다.
+
+```java
+private static final String SYS_RULES = """
+        너는 Tool(도구 호출) 기반 에이전트다.
+        ...
+        """;
+```
+
+**우리는 `src/main/resources/prompts/*.st`로 뺀다.** 이유는 수정 빈도다.
+
+| | 강사님 (텍스트 블록) | 우리 (`.st` 파일) |
+|---|---|---|
+| 프롬프트 수정 | **재컴파일 필요** | 파일만 고치면 됨 |
+| 길이 | 10~15줄 | 규칙 5개 + 발화 로그 |
+| 수정 빈도 | 실습용, 거의 안 고침 | **하루에 수십 번 반복** |
+
+이 프로젝트에서는 프롬프트 자체가 산출물이고 반복 튜닝이 작업의 본체다. 재컴파일 한 번이 루프에 끼면 그 비용이 계속 누적된다.
+
+**주의:** `.st`는 StringTemplate 파일이고 `{}`가 변수 구분자다. **JSON 예시를 `.st`에 넣으면 깨진다.** 출력 형식 지시는 `.st`에 쓰지 않고 `BeanOutputConverter`에 맡긴다 (§7).
+
+파일명은 `{기능}-{system|user}.st`로 통일한다.
 
 ### 평문 출력 — 조간신문
 
