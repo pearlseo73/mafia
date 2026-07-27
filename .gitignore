@@ -3,6 +3,13 @@
 .env.local
 *.key
 
+# ===== 외부 참고 코드 =====
+# 남의 저작물이고 우리 코드가 아니다. 로컬 참고용으로만 둔다.
+# 필요한 내용은 docs/ 문서에 추출해두었으므로 원본이 없어도 작업은 가능하다.
+reference/
+SpringAI-example/
+spring-ai-tool_완성본/
+
 # ===== IDE =====
 # IntelliJ
 .idea/
@@ -18,11 +25,9 @@ bin/
 build/
 target/
 
+# ===== 도구 로컬 설정 =====
+.claude/settings.local.json
+
 # ===== OS =====
 Thumbs.db
 .DS_Store
-
-# ===== 기타 =====
-SpringAI-example/
-
-# report/ 는 이전 프로젝트(가계부) 참고 코드다. 커밋할지 미결 → docs/todo.md

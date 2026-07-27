@@ -1,0 +1,55 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.ssafy.mafia'
+version = '0.0.1-SNAPSHOT'
+description = 'ai-lab'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('springAiVersion', "2.0.0")
+}
+
+dependencies {
+    implementation 'org.springframework.ai:spring-ai-starter-model-openai'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+        showStandardStreams = true      // 프롬프트 결과를 콘솔로 보려면 필수
+        exceptionFormat = 'full'
+    }
+}
+
+// 픽스처(발화 로그)와 문서가 전부 한글이다. 명시하지 않으면 Windows 기본 인코딩으로
+// 읽혀 발화가 깨진 채 프롬프트에 들어간다 → docs/개발환경.md §3
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+tasks.withType(Test).configureEach {
+    systemProperty 'file.encoding', 'UTF-8'
+    systemProperty 'stdout.encoding', 'UTF-8'
+    systemProperty 'stderr.encoding', 'UTF-8'
+}

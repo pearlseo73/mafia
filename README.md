@@ -55,12 +55,18 @@ Spring Boot ──► GMS (LLM API) / GPT 모델
 ## 📁 저장소 구성
 
 ```
-├─ docs/                  설계·명세 문서
-├─ log_analysis/scenario/ 로그 분석용 게임 로그 픽스처
-├─ images/                아키텍처도 · 아이템 상태표 · 테스트 이미지
-├─ mafia_ai_prototype.ipynb
-└─ (예정) spring-ai/      AI 기능 Spring 구현
+├─ CLAUDE.md               AI 에이전트용 프로젝트 지침 (절대 규칙 · 문서 지도)
+├─ docs/                   설계·명세 문서
+├─ log_analysis/
+│  ├─ scenario/scenario1/  로그 분석용 게임 로그 픽스처
+│  ├─ prompts/             기능별 프롬프트 초안
+│  └─ expected/            기대답안 (참조 샘플)
+├─ ai-lab/                 프롬프트 검증용 Spring Boot 프로젝트 (실험실, 정본 아님)
+├─ images/                 아키텍처도 · 아이템 상태표 · 테스트 이미지
+└─ mafia_ai_prototype.ipynb
 ```
+
+> `ai-lab/`은 **프롬프트를 반복 검증하기 위한 실험실**입니다. 실서비스 구현은 팀 백엔드 레포로 옮깁니다 → [개발환경.md](docs/개발환경.md)
 
 ### 📄 문서 (`docs/`)
 
@@ -81,13 +87,22 @@ Redis 연결 전까지 사용할 **샘플 게임 로그**. 6인 게임(마피아
 
 | 파일 | 설명 |
 |---|---|
-| [시나리오-설정.md](log_analysis/scenario/시나리오-설정.md) | 플레이어·역할·아이템 배분, 라운드별 진행, 승리 판정 |
-| [발화로그-공개.txt](log_analysis/scenario/발화로그-공개.txt) | 낮 계열 발화 — 조간신문·AI 심판·아이템 2종의 **유일한 입력** |
-| [발화로그-밤마피아.txt](log_analysis/scenario/발화로그-밤마피아.txt) | 밤 마피아 대화 — **칭호에서만 opt-in** (명세 21-2) |
-| [게임이벤트.txt](log_analysis/scenario/게임이벤트.txt) | 투표 내역·사망·아이템 사용·승리 판정 (칭호 지표용) |
-| [테스트-체크리스트.md](log_analysis/scenario/테스트-체크리스트.md) | 픽스처에 심어둔 테스트 케이스 30건 + 미커버 항목 |
+| [시나리오-설정.md](log_analysis/scenario/scenario1/시나리오-설정.md) | 플레이어·역할·아이템 배분, 라운드별 진행, 승리 판정 |
+| [발화로그-공개.txt](log_analysis/scenario/scenario1/발화로그-공개.txt) | 낮 계열 발화 — 조간신문·AI 심판·아이템 2종의 **유일한 입력** |
+| [발화로그-밤마피아.txt](log_analysis/scenario/scenario1/발화로그-밤마피아.txt) | 밤 마피아 대화 — **칭호에서만 opt-in** (명세 21-2) |
+| [게임이벤트.txt](log_analysis/scenario/scenario1/게임이벤트.txt) | 투표 내역·사망·아이템 사용·승리 판정 (칭호 지표용) |
+| [테스트-체크리스트.md](log_analysis/scenario/scenario1/테스트-체크리스트.md) | 픽스처에 심어둔 테스트 케이스 30건 + 미커버 항목 |
 | [로그2안아이디어.txt](log_analysis/scenario/로그2안아이디어.txt) | 다음 시나리오 축 9종, 거짓 주장 유형 8종 |
 | [칭호예시.txt](log_analysis/scenario/칭호예시.txt) | 칭호 후보 16종 |
+
+### 🧩 프롬프트 · 기대답안
+
+| 파일 | 설명 |
+|---|---|
+| [prompts/진술대조.md](log_analysis/prompts/진술대조.md) · [expected/](log_analysis/expected/진술대조-기대답안.md) | 진술대조권 — 입력 규칙, 출력 계약, TC별 기대 샘플 |
+| [prompts/키워드뽑기.md](log_analysis/prompts/키워드뽑기.md) · [expected/](log_analysis/expected/키워드뽑기-기대답안.md) | 키워드 뽑기 |
+
+> **기대답안은 문자열 일치 검증용이 아닙니다.** 형식과 판정이 맞는지 사람이 눈으로 보는 참조 샘플입니다.
 
 > ⚠️ **낮 로그와 밤 로그를 파일 단위로 분리**했습니다. 명세 21-2에 따라 밤 마피아 발화는
 > 조간신문·AI 심판·아이템 분석의 입력으로 **절대 사용하지 않습니다.** 한 줄만 새어도 마피아 신원이 노출됩니다.

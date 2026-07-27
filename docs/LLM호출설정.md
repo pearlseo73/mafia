@@ -173,21 +173,44 @@ curl -N $GMS_BASE/api.openai.com/v1/chat/completions \
 
 ---
 
-## 8. 참고 코드 — `report/`
+## 8. `ChatClient` 사용 패턴
 
-이전 프로젝트(가계부 앱)의 Spring AI 구현이다. **참고용이며 이 프로젝트의 코드가 아니다.** Jackson 2를 쓰므로 Boot 4에서 그대로 컴파일되지 않는다.
+이전 프로젝트(가계부 앱)와 강사님 예제에서 가져온 것이다. 원본 코드는 `reference/`에 로컬로만 두고 **git에 커밋하지 않으므로**(남의 저작물) 필요한 조각을 여기에 옮겨 적는다.
 
-**재사용할 패턴**
+### 구조화 출력 — 진술대조 · 키워드 · 칭호
 
 ```java
-// 구조화 출력 — 진술대조 · 키워드 · 칭호
-Dto d = chatClient.prompt().system(system).user(user).call().entity(Dto.class);
-
-// 평문 — 조간신문
-String s = chatClient.prompt().system(system).user(user).call().content();
+KeywordResult r = chatClient.prompt()
+        .system(s -> s.text(systemPrompt, StandardCharsets.UTF_8))
+        .user(u -> u.text(userPrompt, StandardCharsets.UTF_8)
+                .param("targetName", target)
+                .param("round", round)
+                .param("utterances", lines))
+        .call()
+        .entity(KeywordResult.class);
 ```
 
-- try/catch로 전체를 감싸 실패를 폴백으로 흡수 → [결정필요사항 T11](결정필요사항.md)(AI 심판 폴백)에 그대로 대응
-- **사실관계는 코드가 계산하고 AI는 문장만 쓴다** (`computeMood` → 프롬프트로 주입). [§5-2](AI기능-구현설계.md)의 칭호 하이브리드 설계와 같은 원칙
+- 프롬프트는 `.st` 리소스로 빼고 `@Value("classpath:/prompts/...")`로 주입한다. 자바 문자열에 박으면 고칠 때마다 재컴파일이다
+- **`text(resource, StandardCharsets.UTF_8)` — 인자 2개짜리를 쓴다.** 1개짜리는 플랫폼 기본 인코딩을 타서 한글 프롬프트가 깨질 수 있다
+- 호출별로 모델·파라미터를 덮어쓰려면 `.options(OpenAiChatOptions.builder()...build())`
 
-**없는 것** — 스트리밍(AI 심판에 필수), 타임아웃 설정.
+### 평문 출력 — 조간신문
+
+```java
+String article = chatClient.prompt().system(system).user(user).call().content();
+```
+
+### 실패 폴백
+
+LLM 호출 전체를 try/catch로 감싸 예외를 폴백으로 흡수한다. 키 오류·네트워크·파싱 실패를 한 곳에서 처리하고 앱이 죽지 않게 한다 → [결정필요사항 T11](결정필요사항.md)(AI 심판 폴백)에 그대로 대응.
+
+### 사실관계는 코드가 계산하고 AI는 문장만 쓴다
+
+가계부 앱에서 `mood`(표정 4종)를 예산 초과 주 수로 **코드가 결정**하고, AI에게는 "이번 달 기분은 `smirk`야"로 주입해 그 톤으로만 글을 쓰게 했다. AI가 `mood`를 고르게 하면 지표와 어긋난다.
+
+[§5-2](AI기능-구현설계.md)의 칭호 하이브리드 설계가 같은 구조다 — 팀킬 횟수는 서버가 세고 LLM은 칭호명·대사만 만든다.
+
+### 아직 안 써본 것
+
+- **스트리밍** (`.stream()`) — AI 심판에 필수. GMS 지원은 §6에서 확인됨
+- **타임아웃 설정** — 아이템 2종은 토론 중 호출이라 지연이 그대로 노출된다

@@ -4,7 +4,7 @@
 
 **작업을 시작하기 전에 [docs/todo.md](docs/todo.md)를 먼저 읽을 것.** 진행 상황과 다음 할 일이 거기 있다.
 
-**Spring 구현은 이 리포가 아니라 팀 백엔드 레포에서 한다.** 이 리포에 Spring 프로젝트를 만들지 않는다 → [docs/개발환경.md](docs/개발환경.md)
+**프롬프트 검증은 이 리포의 `ai-lab/`(Spring Boot)에서 한다.** 팀 백엔드 레포가 준비되면 프롬프트 `.st`와 검증 코드를 그쪽으로 옮긴다. **`ai-lab`은 버려도 되는 실험실이고 정본이 아니다** → [docs/개발환경.md](docs/개발환경.md)
 
 ---
 
@@ -18,7 +18,18 @@
 ## 작업 방식
 
 - **파이썬 하네스를 만들지 않는다.** 프롬프트는 Spring AI에서 직접 검증한다 — `BeanOutputConverter`가 프롬프트를 변조하므로 파이썬 검증 결과가 그대로 옮겨가지 않는다.
-- 프롬프트 반복 루프는 **JUnit 테스트**로 만든다. `@SpringBootTest`로 전체 컨텍스트를 올리면 MySQL·Redis에 붙으려다 실패한다.
+- 프롬프트 반복 루프는 **JUnit 테스트**로 만든다. `ai-lab`은 DB 의존성이 없어 `@SpringBootTest`를 써도 가볍다. **팀 레포로 옮긴 뒤에는** 전체 컨텍스트를 올리면 MySQL·Redis에 붙으려다 실패하므로 그때 범위를 좁힌다.
+- **`ai-lab`에 DB·웹 의존성을 넣지 않는다.** JPA·MySQL·Redis·Web을 붙이면 프롬프트 한 줄 고칠 때마다 인프라를 띄워야 한다.
+
+## 코드를 어디에 두는가
+
+| 위치 | 성격 |
+|---|---|
+| `ai-lab/src/main/` | **팀 레포로 이식할 것** — LLM 출력 계약(DTO), 서비스, 프롬프트 `.st` |
+| `ai-lab/src/test/` | **`ai-lab`에만 남을 것** — 픽스처 로더(`fixture/`), 프롬프트 검증(`prompt/`), 연결 확인(`smoke/`) |
+| `reference/` | **남의 코드** — 강사님 예제 등. git에 커밋하지 않는다. 필요한 내용은 `docs/`에 추출해둔다 |
+
+픽스처 로더는 반드시 `src/test`에 둔다. `main`에 두면 실서비스 코드가 파일에서 발화 로그를 읽는 경로가 생기는데, 실제로는 Redis에서 와야 한다.
 - **"기대답안"은 문자열 일치 검증이 아니다.** 형식과 판정이 맞는지 **사람이 눈으로 보는 참조 샘플**이다. 어서션 러너를 만들지 않는다.
   - 예외 하나: **밤 로그 유출 검사는 문자열 검색으로 자동화한다.** 눈으로는 놓치고, 새면 치명적이다.
 - **LLM이 발화 원문을 인용하게 하지 않는다.** 발화 번호(`u2`)만 반환받아 서버가 원문으로 치환한다. 원문을 생성하지 않으면 없는 발언을 만들어낼 수 없다.
@@ -32,7 +43,7 @@
 |---|---|
 | [docs/todo.md](docs/todo.md) | **진행 상황 · 다음 할 일 · 막힌 것 · 미결 사항** ← 먼저 읽을 것 |
 | [docs/개발환경.md](docs/개발환경.md) | 팀 스택·버전(Boot 4·Java 25·Gradle·JPA/QueryDSL), Spring AI↔Boot 호환표, Jackson 3, **한글 인코딩**, Gradle 명령·스코프(Maven 대응), IDE(IntelliJ·STS) 설정, 이 리포↔팀 레포 역할 분담 |
-| [docs/LLM호출설정.md](docs/LLM호출설정.md) | GMS 주소 구조·**`/v1` 규칙**, Spring AI 프로퍼티 경로(1.x↔2.0 차이), **기능별 모델·temperature·토큰 상한**, reasoning 모델 주의, API 키 관리(`.env`), 구조화 출력·`BeanOutputConverter`, `report/` 참고 코드 패턴, GMS 미확인 항목(스트리밍·모델명·응답시간) |
+| [docs/LLM호출설정.md](docs/LLM호출설정.md) | GMS 주소 구조·**`/v1` 규칙**, Spring AI 프로퍼티 경로(1.x↔2.0 차이), **기능별 모델·토큰 상한**, reasoning 모델 실측, API 키 관리(`.env`), 구조화 출력·`BeanOutputConverter`, **`ChatClient` 사용 패턴**, GMS 검증 결과 |
 | [docs/AI기능-구현설계.md](docs/AI기능-구현설계.md) | §2 발화 로그 Redis 키·격리 · §3 얼굴 분석(face-api, 동요 지수 산식) · §4 AI 심판·AI 위임 · §5 칭호 하이브리드 설계 · §6 조간신문·조작권 · §7 아이템 2종 차별화·환각 방어 · §8 PoC 순서 |
 | [docs/AI-API명세.md](docs/AI-API명세.md) | REST 엔드포인트, WS 이벤트 payload와 **수신 범위**, §3 에러 코드, §4 재접속 복구, §5 다른 파트에 요청할 것 |
 | [docs/결정필요사항.md](docs/결정필요사항.md) | 팀 논의 필요 T1~T12, AI 담당자 단독 결정 항목, 계약만 맞추면 되는 것 |
@@ -40,6 +51,7 @@
 | [docs/기술스택-검토.md](docs/기술스택-검토.md) · [docs/API명세-참고사항.md](docs/API명세-참고사항.md) · [docs/학습로드맵.md](docs/학습로드맵.md) | 스택 타당성·작업 분담 / 명세 반영 시 놓치기 쉬운 항목 / 학습 범위 |
 | [log_analysis/scenario/scenario1/](log_analysis/scenario/scenario1/) | 로그 픽스처 3종(공개·밤마피아·게임이벤트), 시나리오 설정, **테스트 케이스 TC-1~TC-30** |
 | [log_analysis/prompts/](log_analysis/prompts/) · [log_analysis/expected/](log_analysis/expected/) | 기능별 프롬프트 초안 · 기대답안(참조 샘플) |
+| [ai-lab/README.md](ai-lab/README.md) | 프롬프트 검증용 Spring Boot 프로젝트 — 폴더 구분 기준, 실행 방법, 자동 검사 2종 |
 | [log_analysis/scenario/](log_analysis/scenario/) | 다음 시나리오 축 9종 아이디어, 칭호 후보 16종 |
 
 ---
