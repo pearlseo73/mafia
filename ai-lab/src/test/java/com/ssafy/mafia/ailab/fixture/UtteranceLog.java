@@ -24,6 +24,14 @@ public final class UtteranceLog {
     private static final Path PUBLIC_LOG =
             Path.of("..", "log_analysis", "scenario", "scenario1", "발화로그-공개.txt");
 
+    /**
+     * 위 로그의 박도현 발화를 사람이 브라우저에 실제로 읽어서 받은 STT 결과.
+     * 이름 표기가 흔들리고 핵심 동사가 다른 말로 바뀐 상태다 — 프롬프트가 실제 입력을
+     * 견디는지 보는 용도다.
+     */
+    private static final Path STT_LOG =
+            Path.of("..", "log_analysis", "scenario", "scenario1", "발화로그-STT실측.txt");
+
     /** [21:00:15] R1/DAY_DISCUSSION 강예린: 저는 그런 거 시간 낭비라고 ... */
     private static final Pattern LINE =
             Pattern.compile("^\\[(\\d{2}:\\d{2}:\\d{2})]\\s+R(\\d+)/(\\S+)\\s+([^:]+):\\s*(.*)$");
@@ -41,8 +49,17 @@ public final class UtteranceLog {
 
     /** 공개 로그 전체 (낮 계열 페이즈만 담긴 파일이다). */
     public static List<Utterance> loadPublic() {
+        return load(PUBLIC_LOG);
+    }
+
+    /** STT 실측 로그 전체. 전부 박도현의 발화이고 아이템 사용 시각 이전이다. */
+    public static List<Utterance> loadSttReal() {
+        return load(STT_LOG);
+    }
+
+    private static List<Utterance> load(Path path) {
         try {
-            return Files.readAllLines(PUBLIC_LOG, StandardCharsets.UTF_8).stream()
+            return Files.readAllLines(path, StandardCharsets.UTF_8).stream()
                     .map(String::trim)
                     .filter(line -> !line.isEmpty() && !line.startsWith("#"))
                     .map(LINE::matcher)
@@ -56,7 +73,7 @@ public final class UtteranceLog {
                     .toList();
         } catch (IOException e) {
             throw new UncheckedIOException(
-                    "픽스처를 읽지 못했다: " + PUBLIC_LOG.toAbsolutePath(), e);
+                    "픽스처를 읽지 못했다: " + path.toAbsolutePath(), e);
         }
     }
 

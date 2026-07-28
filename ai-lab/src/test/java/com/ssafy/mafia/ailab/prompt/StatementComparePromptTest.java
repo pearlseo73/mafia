@@ -101,6 +101,38 @@ class StatementComparePromptTest {
     }
 
     // ==================================================================
+    // STT 실측 — 같은 대본을 사람이 브라우저에 읽어서 받은 입력으로 TC-1·2 재현
+    //
+    // 판정 품질에 어서션을 걸지 않는다. 나빠지는 것을 보려고 돌리는 테스트이고,
+    // 나빠졌다고 빌드를 깨면 실측값을 기록할 수 없다. 볼 포인트로만 찍는다.
+    // ==================================================================
+    @Test
+    @DisplayName("STT 실측 입력으로 돌리면 무엇이 살아남는가")
+    void STT실측_입력() {
+        List<Statement> input = UtteranceLog.statements(UtteranceLog.loadSttReal());
+        print("STT 실측 입력", input);
+
+        // 원본 9건이 8건으로 왔다 (대본 6·7 이 한 건으로 합쳐졌다).
+        assertThat(input).as("STT 가 돌려준 건수").hasSize(8);
+
+        StatementCompareResult result = compare("박도현", input);
+        print("STT 실측 출력", result, input);
+
+        List<String> ids = result.allUtteranceIds();
+        // 번호가 한 칸씩 밀렸다. 깨끗한 입력의 u2·u6·u9 가 여기서는 u2·u6·u8 이다.
+        checkpoint(ids.containsAll(List.of("u2", "u6", "u8")),
+                "3단 모순 u2·u6·u8 을 이름이 흔들려도 잡는가 (강예린/강혜린/강예은)");
+        checkpoint(ids.containsAll(List.of("u7", "u8")),
+                "u7·u8 자기모순이 남았는가 — '찬성했습니다'가 '편성했습니다'로 인식됐다");
+        checkpoint(!ids.contains("u5"), "u5 '마음이 바뀐 겁니다'를 잡지 않았는가");
+        checkpoint(!ids.contains("u3") && !ids.contains("u4"),
+                "u3·u4 를 잡지 않았는가 — '방어권'이 '방학과'가 되어 뜻이 뒤틀린 발화다");
+
+        assertThat(ids).allMatch(id -> validIds(input.size()).contains(id));
+        UtteranceLog.assertNoNightLogLeak(allText(result));
+    }
+
+    // ==================================================================
     // TC-4 — 발화 부족 (LLM 을 호출하지 않는다)
     // ==================================================================
     @Test
