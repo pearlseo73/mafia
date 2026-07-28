@@ -25,6 +25,25 @@ bin/
 build/
 target/
 
+# ===== 파이썬 =====
+# 가상환경. 수천 개 파일이라 커밋하면 리포가 못 쓰게 된다.
+# 재현은 requirements.txt 로 한다 — pip freeze > requirements.txt
+.venv/
+venv/
+env/
+
+# 캐시·컴파일 결과
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# 노트북 실행 상태
+# .ipynb_checkpoints 는 VS Code·Jupyter 가 만드는 자동 저장본이다.
+.ipynb_checkpoints/
+
 # ===== 도구 로컬 설정 =====
 .claude/settings.local.json
 
