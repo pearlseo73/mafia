@@ -215,10 +215,13 @@ GET /api/v1/rooms/{roomId}/result
   "targetPlayerId": "p3",
   "hasFindings": true,
   "result": {
-    "summary": "2라운드와 3라운드의 진술이 충돌합니다.",
+    "summary": "강예린에 대한 태도를 세 라운드에 걸쳐 다르게 진술했습니다.",
     "contradictions": [
-      { "round": 2, "quote": "저는 어젯밤 아무 말도 안 했어요" },
-      { "round": 3, "quote": "제가 어젯밤에 그 사람을 의심한다고 했잖아요" }
+      { "reason": "1라운드에는 가장 수상하다고 했는데 2라운드에는 처음부터 믿었다고 했습니다.",
+        "quotes": [
+          { "round": 1, "time": "21:01:12", "text": "저는 강예린 씨가 제일 수상해요 ..." },
+          { "round": 2, "time": "21:06:20", "text": "저는 처음부터 강예린 씨를 믿었습니다" }
+        ] }
     ]
   }
 }
@@ -233,6 +236,14 @@ GET /api/v1/rooms/{roomId}/result
 ```
 
 `hasFindings: false`를 **에러로 취급하지 않는다.** 프론트가 정상 결과로 렌더링해야 한다.
+
+#### `quotes`는 LLM 출력이 아니라 서버 조립 결과다
+
+진술대조권의 LLM 출력에는 **발화 원문이 없다.** LLM은 발화 번호(`u2`)만 반환하고, 서버가 번호를 검증한 뒤 원문·라운드·시각으로 치환해서 위 `quotes`를 만든다. 원문을 생성하지 않으면 없는 발언을 만들어낼 수 없다 — 이것이 이 아이템의 환각 방어다 ([프롬프트 문서 §1](../log_analysis/prompts/진술대조.md)).
+
+따라서 프론트에 나가는 `quotes[].text`는 **항상 로그 원문과 글자까지 같다.** 범위 밖 번호(`u99`)나 번호가 하나뿐인 묶음은 서버가 버리므로 페이로드에 오지 않는다.
+
+`hasFindings: false`일 때 서버 내부의 사유값은 `NO_CONTRADICTION` · `INSUFFICIENT` · `AI_UNAVAILABLE` 세 가지이고, 화면 문구는 **서버가 이 값으로 고른다.** LLM이 쓴 문장을 그대로 내보내면 같은 상황에서 표현이 매번 달라진다.
 
 ```jsonc
 // system.notice — 전원 (명세 15-5). 결과는 포함하지 않는다
