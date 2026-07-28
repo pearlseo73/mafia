@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,16 @@ public class KeywordExtractService {
     private static final int MIN_UTTERANCES = 3;
     private static final int MIN_CHARS = 40;
 
+    /**
+     * 단순 추출인데 <b>토론 중 호출</b>이라 가장 싸고 빠른 쪽을 고른다 (docs/LLM호출설정.md §4).
+     *
+     * <p>토큰 상한을 호출에서 주는 이유는 전역 프로퍼티에 두면 진술대조·AI 심판의
+     * {@code gpt-5.x} 호출에 {@code max_tokens} 가 따라 붙어 HTTP 400 이 되기 때문이다.
+     * 10자 이내 키워드 5개면 이 상한으로 충분하다.
+     */
+    private static final String MODEL = "gpt-4o-mini";
+    private static final int MAX_TOKENS = 512;
+
     private static final Resource SYSTEM_PROMPT =
             new ClassPathResource("prompts/keyword-extract-system.st");
     private static final Resource USER_PROMPT =
@@ -53,6 +64,11 @@ public class KeywordExtractService {
         String joined = String.join("\n", utterances);
         try {
             KeywordResult raw = chatClient.prompt()
+                    // Spring AI 2.0 의 .options() 는 Builder 를 받는다. .build() 를 붙이면
+                    // 컴파일되지 않는다 (1.x 는 완성된 ChatOptions 를 받았다).
+                    .options(OpenAiChatOptions.builder()
+                            .model(MODEL)
+                            .maxTokens(MAX_TOKENS))
                     .system(s -> s.text(SYSTEM_PROMPT, StandardCharsets.UTF_8))
                     .user(u -> u.text(USER_PROMPT, StandardCharsets.UTF_8)
                             .param("targetName", targetName)
