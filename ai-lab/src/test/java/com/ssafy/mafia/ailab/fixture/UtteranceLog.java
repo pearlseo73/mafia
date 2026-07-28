@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.ssafy.mafia.ailab.analysis.statement.Statement;
+
 /**
  * 로그 픽스처 로더. Redis 가 붙기 전까지 {@code getPublicUtterances(roomId)} 자리를 대신한다.
  *
@@ -84,11 +86,24 @@ public final class UtteranceLog {
     }
 
     /**
-     * 서비스에 넘길 형태 — 발화 본문만. 나중에 Redis 가 이 자리를 대신한다.
+     * 키워드 뽑기 서비스에 넘길 형태 — 발화 본문만. 나중에 Redis 가 이 자리를 대신한다.
      * 임계값 판정·환각 필터는 서버 로직이므로 {@code src/main} 의 서비스에 있다.
      */
     public static List<String> texts(List<Utterance> utterances) {
         return utterances.stream().map(Utterance::text).toList();
+    }
+
+    /**
+     * 진술대조권 서비스에 넘길 형태 — 라운드·시각·본문. 화자는 대상 1명뿐이라 빼고 넘긴다.
+     *
+     * <p>여기서 하는 일은 <b>형 변환뿐</b>이다. 발화에 번호를 매기는 렌더링·번호 검증·번호를
+     * 원문으로 되돌리는 치환은 모두 {@code src/main} 의 서비스에 있다 — 팀 레포로 옮겨야
+     * 하는 서버 로직이고, 세 가지가 같은 규칙을 공유해야 어긋나지 않는다.
+     */
+    public static List<Statement> statements(List<Utterance> utterances) {
+        return utterances.stream()
+                .map(u -> new Statement(u.round(), u.time(), u.text()))
+                .toList();
     }
 
     /**
