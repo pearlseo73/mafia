@@ -36,6 +36,7 @@
   - 예외 하나: **밤 로그 유출 검사는 문자열 검색으로 자동화한다.** 눈으로는 놓치고, 새면 치명적이다.
 - **LLM이 발화 원문을 인용하게 하지 않는다.** 발화 번호(`u2`)만 반환받아 서버가 원문으로 치환한다. 원문을 생성하지 않으면 없는 발언을 만들어낼 수 없다.
 - 사실관계는 **서버가 계산**하고 LLM은 **문장만** 쓴다. 칭호의 팀킬 횟수, AI 심판의 생존자 검증 모두 서버 몫이다.
+- **발화별 판단은 LLM에게, 조합 탐색은 코드에게.** 하나씩 보는 분류(태도·대상·과거주장 여부)는 실행마다 안정적이지만, 여러 개를 놓고 조합을 빠짐없이 훑는 것은 같은 입력에도 결과가 흔들린다 (진술대조권 8회 실측 → [프롬프트 §2-2](log_analysis/prompts/진술대조.md)).
 
 ---
 
@@ -47,11 +48,13 @@
 | [docs/개발환경.md](docs/개발환경.md) | 팀 스택·버전(Boot 4·Java 25·Gradle·JPA/QueryDSL), Spring AI↔Boot 호환표, Jackson 3, **한글 인코딩**, Gradle 명령·스코프(Maven 대응), IDE(IntelliJ·STS) 설정, 이 리포↔팀 레포 역할 분담 |
 | [docs/LLM호출설정.md](docs/LLM호출설정.md) | GMS 주소 구조·**`/v1` 규칙**, Spring AI 프로퍼티 경로(1.x↔2.0 차이), **기능별 모델·토큰 상한**, reasoning 모델 실측, API 키 관리(`.env`), 구조화 출력·`BeanOutputConverter`, **`ChatClient` 사용 패턴**, GMS 검증 결과 |
 | [docs/AI기능-구현설계.md](docs/AI기능-구현설계.md) | §2 발화 로그 Redis 키·격리 · §3 얼굴 분석(face-api, 동요 지수 산식) · §4 AI 심판·AI 위임 · §5 칭호 하이브리드 설계 · §6 조간신문·조작권 · §7 아이템 2종 차별화·환각 방어 · §8 PoC 순서 |
+| [docs/발화수집-STT.md](docs/발화수집-STT.md) | **입력이 어디서 어떤 모양으로 오는가** — 브라우저 STT 결정, Redis 키 2개·`phase` 필드, 오인식 유형 실측(`confidence`는 쓸모없음), 이름 흔들림 대응, 발화 병합 문제 |
 | [docs/AI-API명세.md](docs/AI-API명세.md) | REST 엔드포인트, WS 이벤트 payload와 **수신 범위**, §3 에러 코드, §4 재접속 복구, §5 다른 파트에 요청할 것 |
 | [docs/결정필요사항.md](docs/결정필요사항.md) | 팀 논의 필요 T1~T12, AI 담당자 단독 결정 항목, 계약만 맞추면 되는 것 |
 | [docs/기능명세서.md](docs/기능명세서.md) | 팀 전체 기능 명세 Task 1~21 (항목 번호의 출처) |
 | [docs/기술스택-검토.md](docs/기술스택-검토.md) · [docs/API명세-참고사항.md](docs/API명세-참고사항.md) · [docs/학습로드맵.md](docs/학습로드맵.md) | 스택 타당성·작업 분담 / 명세 반영 시 놓치기 쉬운 항목 / 학습 범위 |
-| [log_analysis/scenario/scenario1/](log_analysis/scenario/scenario1/) | 로그 픽스처 3종(공개·밤마피아·게임이벤트), 시나리오 설정, **테스트 케이스 TC-1~TC-30** |
+| [log_analysis/scenario/scenario1/](log_analysis/scenario/scenario1/) | 로그 픽스처 3종(공개·밤마피아·게임이벤트), 시나리오 설정, **테스트 케이스 TC-1~TC-30**, **STT 변형본**(`-STT.jsonl` + [설명](log_analysis/scenario/scenario1/발화로그-STT변형-설명.md)) |
+| [log_analysis/stt-test/index.html](log_analysis/stt-test/index.html) | 브라우저 STT 측정 페이지 — Live Server 로 열어야 마이크가 열린다. 대본이 페이지 안에 있다 |
 | [log_analysis/prompts/](log_analysis/prompts/) · [log_analysis/expected/](log_analysis/expected/) | 기능별 프롬프트 초안 · 기대답안(참조 샘플) |
 | [ai-lab/README.md](ai-lab/README.md) | 프롬프트 검증용 Spring Boot 프로젝트 — 폴더 구분 기준, 실행 방법, 자동 검사 2종 |
 | [log_analysis/scenario/](log_analysis/scenario/) | 다음 시나리오 축 9종 아이디어, 칭호 후보 16종 |
