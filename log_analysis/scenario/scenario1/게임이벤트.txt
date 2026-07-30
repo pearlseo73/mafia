@@ -1,86 +1,88 @@
-﻿# 게임 이벤트 로그 (GameSnapshotProvider 대응)
+# 게임 이벤트 로그 (GameSnapshotProvider 대응)
 #
 # 발화 로그만으로는 조간신문의 사망자 템플릿(17-7)과 칭호 지표를 만들 수 없어 별도로 둔다.
 # 형식: [시각] {이벤트} {상세}
+#
+# 플레이어는 닉네임으로 적는다. 실서비스는 입장 시 닉네임만 받고 본명이 들어오지 않는다.
 #
 # 게임: 6인 / 2026-07-26 21:00:00 ~ 21:14:11 / 결과 시민 승
 
 # ===== 초기 배치 =====
 
-[21:00:00] GAME_START players=김서준,이하윤,박도현,최지우,정민재,강예린
-[21:00:00] ROLE 김서준=시민 이하윤=시민 박도현=마피아 최지우=시민 정민재=시민 강예린=마피아
-[21:00:00] ITEM_GRANT 김서준=STATEMENT_COMPARE,KEYWORD_EXTRACT
-[21:00:00] ITEM_GRANT 이하윤=VOTE_DOUBLE
-[21:00:00] ITEM_GRANT 박도현=NEWSPAPER_EDIT,BOMB_DEFENSE
-[21:00:00] ITEM_GRANT 최지우=(없음)
-[21:00:00] ITEM_GRANT 정민재=SILENCE,STATEMENT_COMPARE,KEYWORD_EXTRACT
-[21:00:00] ITEM_GRANT 강예린=SILENCE
+[21:00:00] GAME_START players=라면왕,밤하늘,초코비,소금빵,곰돌이,딸기우유
+[21:00:00] ROLE 라면왕=시민 밤하늘=시민 초코비=마피아 소금빵=시민 곰돌이=시민 딸기우유=마피아
+[21:00:00] ITEM_GRANT 라면왕=STATEMENT_COMPARE,KEYWORD_EXTRACT
+[21:00:00] ITEM_GRANT 밤하늘=VOTE_DOUBLE
+[21:00:00] ITEM_GRANT 초코비=NEWSPAPER_EDIT,BOMB_DEFENSE
+[21:00:00] ITEM_GRANT 소금빵=(없음)
+[21:00:00] ITEM_GRANT 곰돌이=SILENCE,STATEMENT_COMPARE,KEYWORD_EXTRACT
+[21:00:00] ITEM_GRANT 딸기우유=SILENCE
 
 # ===== R1 =====
 
 [21:00:00] PHASE R1/DAY_START            # 첫 낮이라 조간신문 없음
 [21:00:03] PHASE R1/DAY_DISCUSSION
-[21:02:09] ITEM_USE 정민재 KEYWORD_EXTRACT target=강예린 result_visible_to=정민재
+[21:02:09] ITEM_USE 곰돌이 KEYWORD_EXTRACT target=딸기우유 result_visible_to=곰돌이
 [21:03:06] PHASE R1/DAY_VOTE
-[21:03:10] ITEM_USE 이하윤 VOTE_DOUBLE
-[21:03:36] VOTE_CAST 김서준→박도현
-[21:03:36] VOTE_CAST 이하윤→김서준 weight=2
-[21:03:36] VOTE_CAST 박도현→최지우           # 토론에서 "강예린에게 넣겠다"고 말한 것과 불일치
-[21:03:36] VOTE_CAST 최지우→박도현
-[21:03:36] VOTE_CAST 정민재→강예린
-[21:03:36] VOTE_CAST 강예린→최지우
-[21:03:36] VOTE_TALLY 박도현=2 김서준=2 최지우=2 강예린=1 → 3자 동률, 최다득표자 미특정
+[21:03:10] ITEM_USE 밤하늘 VOTE_DOUBLE
+[21:03:36] VOTE_CAST 라면왕→초코비
+[21:03:36] VOTE_CAST 밤하늘→라면왕 weight=2
+[21:03:36] VOTE_CAST 초코비→소금빵           # 토론에서 "딸기우유에게 넣겠다"고 말한 것과 불일치
+[21:03:36] VOTE_CAST 소금빵→초코비
+[21:03:36] VOTE_CAST 곰돌이→딸기우유
+[21:03:36] VOTE_CAST 딸기우유→소금빵
+[21:03:36] VOTE_TALLY 초코비=2 라면왕=2 소금빵=2 딸기우유=1 → 3자 동률, 최다득표자 미특정
 [21:03:39] PHASE R1/AI_JUDGMENT
-[21:04:08] AI_JUDGMENT_TARGET 박도현
-[21:04:08] ITEM_TRIGGER 박도현 BOMB_DEFENSE   # 패시브 발동 (명세 20-6)
+[21:04:08] AI_JUDGMENT_TARGET 초코비
+[21:04:08] ITEM_TRIGGER 초코비 BOMB_DEFENSE   # 패시브 발동 (명세 20-6)
 [21:04:09] EXECUTION none reason=방어권_발동
 [21:04:12] PHASE R1/NIGHT
-[21:04:32] MAFIA_TARGET_SET by=강예린 target=최지우   # 선착순 1명 (명세 21-4)
-[21:04:38] ITEM_USE 박도현 NEWSPAPER_EDIT round=1
-[21:04:42] DEATH 최지우 cause=NIGHT_KILL
+[21:04:32] MAFIA_TARGET_SET by=딸기우유 target=소금빵   # 선착순 1명 (명세 21-4)
+[21:04:38] ITEM_USE 초코비 NEWSPAPER_EDIT round=1
+[21:04:42] DEATH 소금빵 cause=NIGHT_KILL
 [21:04:42] WIN_CHECK 마피아=2 시민=3 → 계속
 
 # ===== R2 =====
 
-[21:04:45] PHASE R2/DAY_START newspaper=published casualties=최지우
+[21:04:45] PHASE R2/DAY_START newspaper=published casualties=소금빵
 [21:04:58] PHASE R2/DAY_DISCUSSION
-[21:06:38] ITEM_USE 강예린 SILENCE target=김서준
+[21:06:38] ITEM_USE 딸기우유 SILENCE target=라면왕
 [21:08:01] PHASE R2/DAY_VOTE
-[21:08:31] VOTE_CAST 김서준→강예린
-[21:08:31] VOTE_CAST 이하윤→정민재             # 시민에게 투표 (2회차 오판)
-[21:08:31] VOTE_CAST 박도현→강예린             # 마피아가 동료 마피아에게 투표
-[21:08:31] VOTE_CAST 정민재→강예린
-[21:08:31] VOTE_CAST 강예린→김서준
-[21:08:31] VOTE_TALLY 강예린=3 정민재=1 김서준=1 → 최다득표 강예린
-[21:08:34] PHASE R2/FINAL_DEFENSE target=강예린
-[21:09:04] DEFENSE_VOTE 김서준=찬성 이하윤=반대 박도현=찬성 정민재=찬성
+[21:08:31] VOTE_CAST 라면왕→딸기우유
+[21:08:31] VOTE_CAST 밤하늘→곰돌이             # 시민에게 투표 (2회차 오판)
+[21:08:31] VOTE_CAST 초코비→딸기우유           # 마피아가 동료 마피아에게 투표
+[21:08:31] VOTE_CAST 곰돌이→딸기우유
+[21:08:31] VOTE_CAST 딸기우유→라면왕
+[21:08:31] VOTE_TALLY 딸기우유=3 곰돌이=1 라면왕=1 → 최다득표 딸기우유
+[21:08:34] PHASE R2/FINAL_DEFENSE target=딸기우유
+[21:09:04] DEFENSE_VOTE 라면왕=찬성 밤하늘=반대 초코비=찬성 곰돌이=찬성
 [21:09:04] DEFENSE_TALLY 찬성=3 반대=1 → 과반, 처형
-[21:09:10] DEATH 강예린 cause=EXECUTION role=마피아
+[21:09:10] DEATH 딸기우유 cause=EXECUTION role=마피아
 [21:09:10] WIN_CHECK 마피아=1 시민=3 → 계속
 [21:09:13] PHASE R2/NIGHT
-[21:09:33] MAFIA_TARGET_SET by=박도현 target=이하윤
-[21:09:43] DEATH 이하윤 cause=NIGHT_KILL
+[21:09:33] MAFIA_TARGET_SET by=초코비 target=밤하늘
+[21:09:43] DEATH 밤하늘 cause=NIGHT_KILL
 [21:09:43] WIN_CHECK 마피아=1 시민=2 → 계속
 
 # ===== R3 =====
 
-[21:09:46] PHASE R3/DAY_START newspaper=published casualties=이하윤
+[21:09:46] PHASE R3/DAY_START newspaper=published casualties=밤하늘
 [21:09:59] PHASE R3/DAY_DISCUSSION
-[21:11:05] ITEM_USE 김서준 STATEMENT_COMPARE target=박도현 result_visible_to=김서준
+[21:11:05] ITEM_USE 라면왕 STATEMENT_COMPARE target=초코비 result_visible_to=라면왕
 [21:13:02] PHASE R3/DAY_VOTE
-[21:13:32] VOTE_CAST 정민재→박도현
-[21:13:32] VOTE_CAST 김서준→박도현
-[21:13:32] VOTE_CAST 박도현→김서준
-[21:13:32] VOTE_TALLY 박도현=2 김서준=1 → 최다득표 박도현
-[21:13:35] PHASE R3/FINAL_DEFENSE target=박도현
-[21:14:05] DEFENSE_VOTE 김서준=찬성 정민재=찬성
+[21:13:32] VOTE_CAST 곰돌이→초코비
+[21:13:32] VOTE_CAST 라면왕→초코비
+[21:13:32] VOTE_CAST 초코비→라면왕
+[21:13:32] VOTE_TALLY 초코비=2 라면왕=1 → 최다득표 초코비
+[21:13:35] PHASE R3/FINAL_DEFENSE target=초코비
+[21:14:05] DEFENSE_VOTE 라면왕=찬성 곰돌이=찬성
 [21:14:05] DEFENSE_TALLY 찬성=2 반대=0 → 과반, 처형
-[21:14:11] DEATH 박도현 cause=EXECUTION role=마피아
+[21:14:11] DEATH 초코비 cause=EXECUTION role=마피아
 [21:14:11] WIN_CHECK 마피아=0 시민=2 → 시민 승 (명세 13-7)
-[21:14:11] GAME_END winner=시민 survivors=김서준,정민재
+[21:14:11] GAME_END winner=시민 survivors=라면왕,곰돌이
 
 # ===== 미사용 아이템 (게임 종료 시점) =====
 
-[21:14:11] ITEM_UNUSED 김서준=KEYWORD_EXTRACT
-[21:14:11] ITEM_UNUSED 정민재=STATEMENT_COMPARE,SILENCE
+[21:14:11] ITEM_UNUSED 라면왕=KEYWORD_EXTRACT
+[21:14:11] ITEM_UNUSED 곰돌이=STATEMENT_COMPARE,SILENCE
 # 두 사람 모두 생존했으므로 명세 16-10(사망 시 사용 완료 처리)은 적용되지 않음
