@@ -215,12 +215,12 @@ GET /api/v1/rooms/{roomId}/result
   "targetPlayerId": "p3",
   "hasFindings": true,
   "result": {
-    "summary": "강예린에 대한 태도를 세 라운드에 걸쳐 다르게 진술했습니다.",
+    "summary": "딸기우유에 대한 태도를 세 라운드에 걸쳐 다르게 진술했습니다.",
     "contradictions": [
       { "reason": "1라운드에는 가장 수상하다고 했는데 2라운드에는 처음부터 믿었다고 했습니다.",
         "quotes": [
-          { "round": 1, "time": "21:01:12", "text": "저는 강예린 씨가 제일 수상해요 ..." },
-          { "round": 2, "time": "21:06:20", "text": "저는 처음부터 강예린 씨를 믿었습니다" }
+          { "round": 1, "time": "21:01:12", "text": "저는 딸기우유 씨가 제일 수상해요 ..." },
+          { "round": 2, "time": "21:06:20", "text": "저는 처음부터 딸기우유 씨를 믿었습니다" }
         ] }
     ]
   }
