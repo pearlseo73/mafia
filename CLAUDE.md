@@ -58,6 +58,7 @@
 | [log_analysis/scenario/scenario1/](log_analysis/scenario/scenario1/) | 로그 픽스처 3종(공개·밤마피아·게임이벤트), 시나리오 설정, **테스트 케이스 TC-1~TC-30**, **STT 변형본**(`-STT.jsonl` + [설명](log_analysis/scenario/scenario1/발화로그-STT변형-설명.md)) |
 | [log_analysis/stt-test/index.html](log_analysis/stt-test/index.html) | 브라우저 STT 측정 페이지 — Live Server 로 열어야 마이크가 열린다. 대본이 페이지 안에 있다 |
 | [log_analysis/prompts/](log_analysis/prompts/) · [log_analysis/expected/](log_analysis/expected/) | 기능별 프롬프트 초안 · 기대답안(참조 샘플) |
+| [SpringAI이식/README.md](SpringAI이식/README.md) | **팀 백엔드 레포로 들고 갈 이식 키트** — 이식 순서, 코드 스타일(`.st` 함정), 기능별 이식 명세 5종, `prompts/*.st` 10개, **렌더 스냅샷 5개**(Java 렌더를 문자열로 대조하는 기준), 검증 체크리스트 |
 | [ai-lab/README.md](ai-lab/README.md) | 프롬프트 검증용 Spring Boot 프로젝트 — 폴더 구분 기준, 실행 방법, 자동 검사 2종 |
 | [log_analysis/scenario/](log_analysis/scenario/) | 다음 시나리오 축 9종 아이디어, 칭호 후보 16종 |
 
