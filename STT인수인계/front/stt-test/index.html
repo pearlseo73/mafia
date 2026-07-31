@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STT 실측 — 브라우저 음성인식이 실제로 어떤 모양으로 오는지</title>
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px;
+    font-family: "Malgun Gothic", system-ui, sans-serif;
+    line-height: 1.6; max-width: 1100px; margin-inline: auto;
+  }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .sub { opacity: .7; font-size: 14px; margin-bottom: 20px; }
+
+  .bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
+  button {
+    font: inherit; padding: 8px 16px; border-radius: 6px;
+    border: 1px solid currentColor; background: transparent; cursor: pointer;
+  }
+  button:disabled { opacity: .4; cursor: default; }
+  button.primary { background: #2563eb; color: #fff; border-color: #2563eb; }
+  label.chk { font-size: 14px; display: flex; align-items: center; gap: 6px; }
+
+  .status {
+    padding: 10px 14px; border-radius: 6px; margin-bottom: 12px;
+    border: 1px solid rgba(128,128,128,.35); font-size: 14px;
+  }
+  .status b { font-variant-numeric: tabular-nums; }
+  .interim { opacity: .6; font-style: italic; min-height: 1.6em; }
+  .err { color: #dc2626; }
+
+  .summary {
+    display: flex; gap: 20px; flex-wrap: wrap;
+    padding: 12px 14px; margin-bottom: 16px; font-size: 14px;
+    border: 1px solid rgba(128,128,128,.35); border-radius: 6px;
+  }
+  .summary span b { font-variant-numeric: tabular-nums; }
+
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { padding: 6px 10px; text-align: left; border-bottom: 1px solid rgba(128,128,128,.25); }
+  th { font-weight: 600; opacity: .7; font-size: 13px; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.text { font-family: Consolas, "D2Coding", monospace; }
+  tr.low td { background: rgba(220,38,38,.10); }
+
+  details { margin-top: 28px; }
+  summary { cursor: pointer; font-weight: 600; }
+  pre {
+    font-family: Consolas, "D2Coding", monospace; font-size: 14px;
+    padding: 12px; border-radius: 6px; overflow-x: auto;
+    border: 1px solid rgba(128,128,128,.35);
+  }
+  .hint { font-size: 13px; opacity: .75; }
+</style>
+</head>
+<body>
+
+<h1>STT 실측 — 브라우저 음성인식이 실제로 어떤 모양으로 오는지</h1>
+<div class="sub">
+  Chrome / Edge · <b>localhost 또는 https</b> 에서만 동작합니다 (Live Server 로 열 것) · 인식은 구글 서버를 거치므로 인터넷 필요
+</div>
+
+<div class="bar">
+  <button id="start" class="primary">시작</button>
+  <button id="stop" disabled>정지</button>
+  <button id="clear">초기화</button>
+  <button id="copy">결과 복사 (픽스처 형식)</button>
+  <label class="chk"><input type="checkbox" id="autoRestart" checked> 자동 재시작</label>
+  <label class="chk"><input type="checkbox" id="showInterim" checked> 중간 결과 표시</label>
+</div>
+
+<div class="status">
+  상태: <b id="state">대기</b>
+  <span id="error" class="err"></span>
+  <div class="interim" id="interim"></div>
+</div>
+
+<div class="summary">
+  <span>최종 결과 <b id="cCount">0</b>건</span>
+  <span>총 <b id="cChars">0</b>자</span>
+  <span>평균 <b id="cAvg">0</b>자</span>
+  <span>조각 간격 평균 <b id="cGap">0</b>초</span>
+  <span>임계값(3건·40자) <b id="cThreshold">미달</b></span>
+  <span>재시작 <b id="cRestart">0</b>회</span>
+</div>
+
+<div class="scroll">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th><th>시각</th><th>간격</th><th>글자</th><th>confidence</th><th>인식된 텍스트</th>
+      </tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+</div>
+
+<details open>
+  <summary>대본 A — 픽스처 그대로 (초코비 발화 9건 · 진술대조권 TC-1 입력)</summary>
+  <p class="hint">한 줄 읽고 <b>2초쯤 쉬었다가</b> 다음 줄로. 2번이 세 조각으로 쪼개지는지가 핵심입니다.</p>
+<pre>1. 밤하늘 씨 말도 일리가 있어요 보통 마피아가 먼저 판을 짜려고 하니까
+2. 저는 딸기우유 씨가 제일 수상해요 아까부터 논의를 계속 막고 있어요 이번 투표는 딸기우유 씨한테 넣을 생각입니다
+3. 저 방어권 있습니다
+4. 저는 시민입니다 방어권을 쓴 게 죄가 되나요
+5. 마음이 바뀐 겁니다 그게 이상한가요
+6. 딸기우유 씨는 아까부터 논리가 있었어요 저는 처음부터 딸기우유 씨를 믿었습니다
+7. 저도 딸기우유 씨한테 넣겠습니다
+8. 저는 딸기우유 씨를 처형하는 데 찬성했습니다 마피아가 동료를 죽이나요
+9. 저는 딸기우유 씨를 의심한 적이 없습니다 그래서 어제 마음이 아팠어요</pre>
+</details>
+
+<details>
+  <summary>대본 B — 일부러 괴롭히기</summary>
+<pre>10. (중간에 3초 쉬고)   저는 딸기우유 씨가 …… 제일 수상해요
+11. (숨 안 쉬고 빠르게)  아니 그러면 삼분 동안 뭘 어떻게 하겠다는 거예요 다들 시민이라고 할 거잖아요
+12. (아주 짧게)          네
+13. (아주 짧게)          글쎄요
+14. 일라운드에는 수상하다고 했고 이라운드에는 믿었다고 했어요
+15. AI 심판으로 넘어갔네요
+16. 어 그니까 저는 뭐 잘 모르겠는데요 아무튼</pre>
+  <p class="hint">
+    14·15번은 숫자·영어 표기를 보는 것입니다 — <code>일라운드</code>인지 <code>1라운드</code>인지,
+    <code>AI</code>인지 <code>에이아이</code>인지. 그리고 이름(<code>딸기우유</code>)이 흔들리는지 꼭 확인하세요.
+  </p>
+</details>
+
+<script>
+// ── 브라우저 지원 확인 ───────────────────────────────────────────────
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+const el = id => document.getElementById(id);
+const startBtn = el('start'), stopBtn = el('stop');
+
+if (!SR) {
+  el('state').textContent = '미지원';
+  el('error').textContent = ' — 이 브라우저는 SpeechRecognition 을 지원하지 않습니다. Chrome 이나 Edge 로 열어주세요.';
+  startBtn.disabled = true;
+}
+
+// ── 상태 ────────────────────────────────────────────────────────────
+let recognition = null;
+let listening = false;     // 사용자가 "시작"을 눌러 듣기를 원하는 상태
+let results = [];          // 최종 결과만 쌓는다
+let restarts = 0;
+let lastAt = null;         // 이전 최종 결과 시각 (조각 간격 계산용)
+
+// ── 인식기 만들기 ───────────────────────────────────────────────────
+function createRecognition() {
+  const r = new SR();
+  r.lang = 'ko-KR';          // 없으면 영어로 인식한다
+  r.continuous = true;       // 한 문장 끝나도 멈추지 않는다
+  r.interimResults = true;   // 중간 결과도 받는다
+
+  r.onstart = () => setState('듣는 중');
+
+  r.onresult = event => {
+    let interim = '';
+    // resultIndex 부터가 이번에 새로 온 것이다. 처음부터 돌면 중복 처리된다.
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const res = event.results[i];
+      if (res.isFinal) {
+        addFinal(res[0].transcript.trim(), res[0].confidence);
+      } else {
+        interim += res[0].transcript;
+      }
+    }
+    el('interim').textContent =
+      el('showInterim').checked && interim ? '인식 중… ' + interim : '';
+  };
+
+  r.onerror = event => {
+    // no-speech / aborted 는 흔하게 나므로 치명적 오류와 구분해서 보여준다.
+    el('error').textContent = ' — onerror: ' + event.error;
+    if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+      listening = false;
+      el('error').textContent += ' (마이크 권한이 거부됐습니다. 주소창 왼쪽 자물쇠에서 허용하세요)';
+      syncButtons();
+    }
+  };
+
+  r.onend = () => {
+    el('interim').textContent = '';
+    // Chrome 은 조용하면 알아서 종료한다. 다시 켜주지 않으면 게임 중에 조용히 죽는다.
+    if (listening && el('autoRestart').checked) {
+      restarts++;
+      el('cRestart').textContent = restarts;
+      setState('재시작 중…');
+      setTimeout(() => { if (listening) r.start(); }, 300);
+    } else {
+      listening = false;
+      setState('정지');
+      syncButtons();
+    }
+  };
+
+  return r;
+}
+
+// ── 최종 결과 한 건 추가 ────────────────────────────────────────────
+function addFinal(text, confidence) {
+  if (!text) return;
+
+  const now = new Date();
+  const gap = lastAt ? (now - lastAt) / 1000 : null;
+  lastAt = now;
+
+  results.push({ time: hhmmss(now), gap, text, confidence });
+  renderRow(results.length, results[results.length - 1]);
+  renderSummary();
+}
+
+function renderRow(index, r) {
+  const tr = document.createElement('tr');
+  // confidence 가 낮으면 오인식 가능성이 높다. 눈에 띄게 표시한다.
+  if (typeof r.confidence === 'number' && r.confidence > 0 && r.confidence < 0.8) {
+    tr.className = 'low';
+  }
+  tr.innerHTML = `
+    <td class="num">${index}</td>
+    <td class="num">${r.time}</td>
+    <td class="num">${r.gap === null ? '—' : r.gap.toFixed(1) + 's'}</td>
+    <td class="num">${r.text.length}</td>
+    <td class="num">${typeof r.confidence === 'number' ? r.confidence.toFixed(3) : '—'}</td>
+    <td class="text"></td>`;
+  tr.lastElementChild.textContent = r.text;   // 원문을 그대로. HTML 해석 금지
+  el('rows').appendChild(tr);
+  tr.scrollIntoView({ block: 'nearest' });
+}
+
+function renderSummary() {
+  const n = results.length;
+  const chars = results.reduce((s, r) => s + r.text.length, 0);
+  const gaps = results.map(r => r.gap).filter(g => g !== null);
+  const avgGap = gaps.length ? gaps.reduce((a, b) => a + b, 0) / gaps.length : 0;
+
+  el('cCount').textContent = n;
+  el('cChars').textContent = chars;
+  el('cAvg').textContent = n ? Math.round(chars / n) : 0;
+  el('cGap').textContent = avgGap.toFixed(1);
+  // 진술대조권·키워드 뽑기가 LLM 을 호출하는 조건과 같은 기준이다.
+  el('cThreshold').textContent = (n >= 3 && chars >= 40) ? '통과' : '미달';
+}
+
+// ── 픽스처 형식으로 복사 ────────────────────────────────────────────
+// log_analysis/scenario/scenario1/발화로그-공개.txt 와 같은 모양으로 뽑아
+// 손으로 쓴 픽스처와 바로 비교할 수 있게 한다.
+el('copy').addEventListener('click', async () => {
+  if (!results.length) return;
+  const lines = results.map(r => `[${r.time}] R1/DAY_DISCUSSION 초코비: ${r.text}`);
+  const header =
+    `# STT 실측 ${new Date().toLocaleString('ko-KR')}\n` +
+    `# ${results.length}건 · 총 ${results.reduce((s, r) => s + r.text.length, 0)}자\n`;
+  try {
+    await navigator.clipboard.writeText(header + lines.join('\n') + '\n');
+    el('copy').textContent = '복사됨';
+    setTimeout(() => el('copy').textContent = '결과 복사 (픽스처 형식)', 1200);
+  } catch {
+    // 클립보드가 막히면 콘솔로 뺀다
+    console.log(header + lines.join('\n'));
+    el('error').textContent = ' — 클립보드 접근이 막혀 콘솔에 출력했습니다 (F12)';
+  }
+});
+
+// ── 컨트롤 ──────────────────────────────────────────────────────────
+startBtn.addEventListener('click', () => {
+  el('error').textContent = '';
+  recognition = recognition || createRecognition();
+  listening = true;
+  syncButtons();
+  try { recognition.start(); } catch { /* 이미 시작된 경우 무시 */ }
+});
+
+stopBtn.addEventListener('click', () => {
+  listening = false;              // onend 에서 재시작하지 않도록 먼저 내린다
+  syncButtons();
+  if (recognition) recognition.stop();
+});
+
+el('clear').addEventListener('click', () => {
+  results = []; restarts = 0; lastAt = null;
+  el('rows').innerHTML = '';
+  el('cRestart').textContent = '0';
+  renderSummary();
+});
+
+function syncButtons() {
+  startBtn.disabled = listening || !SR;
+  stopBtn.disabled = !listening;
+}
+
+function setState(s) { el('state').textContent = s; }
+
+function hhmmss(d) {
+  const p = n => String(n).padStart(2, '0');
+  return `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+}
+
+renderSummary();
+</script>
+
+</body>
+</html>

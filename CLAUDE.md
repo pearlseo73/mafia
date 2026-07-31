@@ -49,7 +49,8 @@
 | [docs/개발환경.md](docs/개발환경.md) | 팀 스택·버전(Boot 4·Java 25·Gradle·JPA/QueryDSL), Spring AI↔Boot 호환표, Jackson 3, **한글 인코딩**, Gradle 명령·스코프(Maven 대응), IDE(IntelliJ·STS) 설정, 이 리포↔팀 레포 역할 분담 |
 | [docs/LLM호출설정.md](docs/LLM호출설정.md) | GMS 주소 구조·**`/v1` 규칙**, Spring AI 프로퍼티 경로(1.x↔2.0 차이), **기능별 모델·토큰 상한**, reasoning 모델 실측, API 키 관리(`.env`), 구조화 출력·`BeanOutputConverter`, **`ChatClient` 사용 패턴**, GMS 검증 결과 |
 | [docs/AI기능-구현설계.md](docs/AI기능-구현설계.md) | §2 발화 로그 Redis 키·격리 · §3 얼굴 분석(face-api, 동요 지수 산식) · §4 AI 심판·AI 위임 · §5 칭호 하이브리드 설계 · §6 조간신문·조작권 · §7 아이템 2종 차별화·환각 방어 · §8 PoC 순서 |
-| [docs/발화수집-STT.md](docs/발화수집-STT.md) | **입력이 어디서 어떤 모양으로 오는가** — 브라우저 STT 결정, Redis 키 2개·`phase` 필드, 오인식 유형 실측(`confidence`는 쓸모없음), 이름 흔들림 대응, 발화 병합 문제 |
+| [docs/발화수집-STT.md](docs/발화수집-STT.md) | **입력이 어디서 어떤 모양으로 오는가** — 브라우저 STT 결정, Redis 키 2개·`phase` 필드, 오인식 유형 실측(`confidence`는 쓸모없음), 기능별 필터 조건, 예측 vs 실측(교정·인용·병합), 이름 흔들림 대응 |
+| [docs/STT-인수인계.md](docs/STT-인수인계.md) | **프론트·백엔드에게 넘기는 계약** — Web Speech API 요구사항·측정 페이지에서 바꿀 것, `speech.utterance` 페이로드, 서버가 붙이는 필드 4개, 키 선택 규칙·경계 버퍼, 미결 6건, 수용 기준 체크리스트 |
 | [docs/AI-API명세.md](docs/AI-API명세.md) | REST 엔드포인트, WS 이벤트 payload와 **수신 범위**, §3 에러 코드, §4 재접속 복구, §5 다른 파트에 요청할 것 |
 | [docs/결정필요사항.md](docs/결정필요사항.md) | 팀 논의 필요 T1~T12, AI 담당자 단독 결정 항목, 계약만 맞추면 되는 것 |
 | [docs/기능명세서.md](docs/기능명세서.md) | 팀 전체 기능 명세 Task 1~21 (항목 번호의 출처) |

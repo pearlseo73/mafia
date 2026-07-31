@@ -1,0 +1,79 @@
+{ "t":"21:00:04", "speaker":"라면왕", "round":1, "phase":"DAY_START", "text":"이 시작했네요" }
+{ "t":"21:00:08", "speaker":"라면왕", "round":1, "phase":"DAY_DISCUSSION", "text":"자 첫 라운드니까 정보가 아예 없어요 일단 한 명씩 돌아가면서 얘기해보죠" }
+{ "t":"21:00:15", "speaker":"딸기우유", "round":1, "phase":"DAY_DISCUSSION", "text":"저는 그런 거 시간 남비라고 생각해요 그냥 느낌으로 가야죠" }
+{ "t":"21:00:23", "speaker":"곰돌이", "round":1, "phase":"DAY_DISCUSSION", "text":"느낌으로 가면 시민만 죽어요 그건 마피아가 제일 좋아하는 방식이고요" }
+{ "t":"21:00:31", "speaker":"딸기우유", "round":1, "phase":"DAY_DISCUSSION", "text":"아니 그러면 3년 동안 뭘 어떻게 하겠다는 거예요 근데 신이라고 할 거잖아요" }
+{ "t":"21:00:40", "speaker":"밤하늘", "round":1, "phase":"DAY_DISCUSSION", "text":"저는 라멘왕 씨가 처음부터 진행을 주도하는 게 좀 걸리는데요" }
+{ "t":"21:00:48", "speaker":"라면왕", "round":1, "phase":"DAY_DISCUSSION", "text":"제가 말을 꺼낸 게 의심 근거가 되면 앞으로 아무도 말을 안 하게 되죠" }
+{ "t":"21:00:57", "speaker":"초코비", "round":1, "phase":"DAY_DISCUSSION", "text":"밥하늘 씨 말도 일리가 있어요 보통 마피아가 먼저 판을 짜려고 하니까" }
+{ "t":"21:01:05", "speaker":"곰돌이", "round":1, "phase":"DAY_DISCUSSION", "text":"초코비 씨는 지금 밤하늘 씨 말에 그냥 언 거잖아요 본인 생각은 뭐예요" }
+{ "t":"21:01:12", "speaker":"초코비", "round":1, "phase":"DAY_DISCUSSION", "text":"저는 딸기우유 씨가 제일 수상해요 아까부터 논의를 계속 막고 있어요 이번 투표는 달기우유 씨한테 너를 생각입니다" }
+{ "t":"21:01:22", "speaker":"딸기우유", "round":1, "phase":"DAY_DISCUSSION", "text":"뭐라고요 제가 뭘 막았다는 거죠 방식이 비효율적이라고 한 거잖아요" }
+{ "t":"21:01:30", "speaker":"라면왕", "round":1, "phase":"DAY_DISCUSSION", "text":"지금 딸기우유 씨 반응 속도가 좀 빠르네요" }
+{ "t":"21:01:38", "speaker":"딸기우유", "round":1, "phase":"DAY_DISCUSSION", "text":"억울하면 빠르게 말하는 게 당연하죠 저는 시민이에요" }
+{ "t":"21:01:45", "speaker":"소금빵", "round":1, "phase":"DAY_DISCUSSION", "text":"저는 잘 모르겠어요" }
+{ "t":"21:01:52", "speaker":"곰돌이", "round":1, "phase":"DAY_DISCUSSION", "text":"소금방 씨 그래도 한 명은 골라야 해요 안 고르면 AI로 넘어가요" }
+{ "t":"21:02:00", "speaker":"밤하늘", "round":1, "phase":"DAY_DISCUSSION", "text":"소금빵 씨는 계속 조용한데 이것도 전략일 수 있어요" }
+{ "t":"21:02:09", "speaker":"곰돌이", "round":1, "phase":"DAY_DISCUSSION", "text":"저 아이템 쓸게요 딸기우유 씨 발언에서 키워드 뽑아볼게요" }
+{ "t":"21:02:20", "speaker":"딸기우유", "round":1, "phase":"DAY_DISCUSSION", "text":"마음대로 하세요 저는 숨길 게 없어요" }
+{ "t":"21:02:30", "speaker":"라면왕", "round":1, "phase":"DAY_DISCUSSION", "text":"결과 나오면 공유해주세요" }
+{ "t":"21:02:45", "speaker":"곰돌이", "round":1, "phase":"DAY_DISCUSSION", "text":"어 근데 이거 저만 보이는 거네요 딸기우유 씨 발언에서 몰아가기랑 시간 남비 이런 단어가 계속 나왔어요" }
+{ "t":"21:02:50", "speaker":"소금빵", "round":1, "phase":"DAY_DISCUSSION", "text":"초코피 씨가 좀 이상한 것 같아요" }
+{ "t":"21:02:58", "speaker":"딸기우유", "round":1, "phase":"DAY_DISCUSSION", "text":"소금빵 씨는 아무 근거도 없이 말하네요 그게 더 위험해요" }
+{ "t":"21:03:10", "speaker":"밤하늘", "round":1, "phase":"DAY_VOTE", "text":"저는 아이템 써서 두 표로 넣을게요" }
+{ "t":"21:03:20", "speaker":"딸기우유", "round":1, "phase":"DAY_VOTE", "text":"그런 걸 왜 미리 말해요" }
+{ "t":"21:03:28", "speaker":"라면왕", "round":1, "phase":"DAY_VOTE", "text":"다 들었나요" }
+{ "t":"21:03:45", "speaker":"라면왕", "round":1, "phase":"AI_JUDGMENT", "text":"동률이라 AI 심판으로 넘어갔네요" }
+{ "t":"21:03:55", "speaker":"딸기우유", "round":1, "phase":"AI_JUDGMENT", "text":"이거 누구 나오는 거예요" }
+{ "t":"21:04:05", "speaker":"곰돌이", "round":1, "phase":"AI_JUDGMENT", "text":"초코 비 씨네요" }
+{ "t":"21:04:08", "speaker":"초코비", "round":1, "phase":"AI_JUDGMENT", "text":"저 방학과 있습니다" }
+{ "t":"21:04:50", "speaker":"라면왕", "round":2, "phase":"DAY_START", "text":"소금빵 씨가 죽었네요" }
+{ "t":"21:04:55", "speaker":"곰돌이", "round":2, "phase":"DAY_START", "text":"근데 신문 내용이 좀 이상한데요 어제 흐름하고 안 맞아요" }
+{ "t":"21:05:05", "speaker":"라면왕", "round":2, "phase":"DAY_DISCUSSION", "text":"정리하면 어젯밤에 소금빵 씨가 죽었고 소금방 씨는 마지막에 초코비 씨를 지목했어요" }
+{ "t":"21:05:14", "speaker":"곰돌이", "round":2, "phase":"DAY_DISCUSSION", "text":"그리고 AI 심판이 초코비 씨를 골랐는데 방어권으로 살았죠" }
+{ "t":"21:05:23", "speaker":"밤하늘", "round":2, "phase":"DAY_DISCUSSION", "text":"근데 AI가 틀릴 수도 있잖아요 그걸 그대로 믿으면 안 되죠" }
+{ "t":"21:05:31", "speaker":"라면왕", "round":2, "phase":"DAY_DISCUSSION", "text":"두 개가 겹치는데 우연으로 보기는 어렵죠" }
+{ "t":"21:05:40", "speaker":"초코비", "round":2, "phase":"DAY_DISCUSSION", "text":"저는 시민입니다 방어권을 쓴게 죄가 되나요" }
+{ "t":"21:05:48", "speaker":"딸기우유", "round":2, "phase":"DAY_DISCUSSION", "text":"저도 초코비 씨는 아닌 것 같아요 오히려 어제 저를 지목했던 사람이잖아요" }
+{ "t":"21:05:58", "speaker":"곰돌이", "round":2, "phase":"DAY_DISCUSSION", "text":"어제 초코비 씨는 딸기우유 씨한테 투표한다고 했는데 실제로는 소금빵 씨한테 넣었어요" }
+{ "t":"21:06:08", "speaker":"라면왕", "round":2, "phase":"DAY_DISCUSSION", "text":"그 부분이 제일 걸립니다 말하고 행동이 달랐어요" }
+{ "t":"21:06:20", "speaker":"초코비", "round":2, "phase":"DAY_DISCUSSION", "text":"마음이 바뀐 겁니다 그게 이상한가요 딸기우유 씨는 아까부터 논리가 있었어요 저는 처음부터 딸기유유 씨를 믿었습니다" }
+{ "t":"21:06:30", "speaker":"곰돌이", "round":2, "phase":"DAY_DISCUSSION", "text":"방금 그 말 어제랑 완전히 다르잖아요 어제는 제일 수상하다고 했어요" }
+{ "t":"21:06:38", "speaker":"딸기우유", "round":2, "phase":"DAY_DISCUSSION", "text":"그만 좀 하세요 라면왕 씨 조용히 좀 해봐요 아이템 쓸게요" }
+{ "t":"21:06:55", "speaker":"곰돌이", "round":2, "phase":"DAY_DISCUSSION", "text":"지금 라면왕 씨 입을 막았어요 이게 답이죠" }
+{ "t":"21:07:05", "speaker":"밤하늘", "round":2, "phase":"DAY_DISCUSSION", "text":"아니 저는 공돌이 씨가 계속 몰아가는 게 더 이상해요" }
+{ "t":"21:07:15", "speaker":"곰돌이", "round":2, "phase":"DAY_DISCUSSION", "text":"저는 아이템까지 써서 정보를 공유했는데요" }
+{ "t":"21:07:25", "speaker":"딸기우유", "round":2, "phase":"DAY_DISCUSSION", "text":"그 결과 아무도 못 봤죠 혼자만 봤다고 하는 거잖아요" }
+{ "t":"21:07:35", "speaker":"곰돌이", "round":2, "phase":"DAY_DISCUSSION", "text":"그건 규칙이 그런 거예요 제가 정한 게 아니고요" }
+{ "t":"21:07:45", "speaker":"밤하늘", "round":2, "phase":"DAY_DISCUSSION", "text":"저는 곰돌이 씨에게 투표하겠습니다" }
+{ "t":"21:07:53", "speaker":"딸기우유", "round":2, "phase":"DAY_DISCUSSION", "text":"저도 라면 왕 씨요" }
+{ "t":"21:08:10", "speaker":"라면왕", "round":2, "phase":"DAY_VOTE", "text":"저는 딸기우유 씨입니다" }
+{ "t":"21:08:20", "speaker":"초코비", "round":2, "phase":"DAY_VOTE", "text":"저도 딸기우유 씨한테 넣겠습니다" }
+{ "t":"21:08:25", "speaker":"딸기우유", "round":2, "phase":"DAY_VOTE", "text":"뭐라고요 초코비 씨 지금 진심이에요" }
+{ "t":"21:08:38", "speaker":"딸기우유", "round":2, "phase":"FINAL_DEFENSE", "text":"저는 진짜 시민이에요 제가 마피아면 왜 초코비 씨를 계속 감쌌겠어요" }
+{ "t":"21:08:50", "speaker":"딸기우유", "round":2, "phase":"FINAL_DEFENSE", "text":"초코비 씨 지금" }
+{ "t":"21:08:52", "speaker":"딸기우유", "round":2, "phase":"FINAL_DEFENSE", "text":"저 버리는 거예요" }
+{ "t":"21:09:00", "speaker":"딸기우유", "round":2, "phase":"FINAL_DEFENSE", "text":"저 죽으면 다음은 라면왕 씨예요 기억하세요" }
+{ "t":"21:09:07", "speaker":"곰돌이", "round":2, "phase":"RESULT", "text":"마피아 없네요" }
+{ "t":"21:09:50", "speaker":"라면왕", "round":3, "phase":"DAY_START", "text":"밤하늘 씨가 죽었어요" }
+{ "t":"21:09:55", "speaker":"곰돌이", "round":3, "phase":"DAY_START", "text":"이제 세 시네요" }
+{ "t":"21:10:05", "speaker":"라면왕", "round":3, "phase":"DAY_DISCUSSION", "text":"남은 마피아는 한 명이고 저희 셋 중에 있어요" }
+{ "t":"21:10:15", "speaker":"곰돌이", "round":3, "phase":"DAY_DISCUSSION", "text":"저는 초코비 씨라고 봅니다" }
+{ "t":"21:10:23", "speaker":"초코비", "round":3, "phase":"DAY_DISCUSSION", "text":"저는 딸기우유 씨를 처형하는데 편성했습니다 마피아가 동료를 죽이다니요" }
+{ "t":"21:10:35", "speaker":"라면왕", "round":3, "phase":"DAY_DISCUSSION", "text":"오히려 그게 의심을 피하는 방법이죠" }
+{ "t":"21:10:45", "speaker":"초코비", "round":3, "phase":"DAY_DISCUSSION", "text":"저는 딸기우유 씨를 의심한 적이 없습니다 그래서 어제 마음이 아팠어요" }
+{ "t":"21:10:58", "speaker":"곰돌이", "round":3, "phase":"DAY_DISCUSSION", "text":"방금 스스로 모순이잖아요 의심한 적 없는데 처형에 찬성했다고요" }
+{ "t":"21:11:05", "speaker":"라면왕", "round":3, "phase":"DAY_DISCUSSION", "text":"확인해보죠 아이템 쓸게요 초코비 씨 진술 대조해볼게요" }
+{ "t":"21:11:20", "speaker":"라면왕", "round":3, "phase":"DAY_DISCUSSION", "text":"나왔어요 1라운드에는 딸기우유 씨가 제일 수상하다고 했고 2라운드에는 처음부터 믿었다고 했고 지금은 의심한 적 없다고 했어요" }
+{ "t":"21:11:35", "speaker":"초코비", "round":3, "phase":"DAY_DISCUSSION", "text":"말이 조금 헷갈린 겁니다 상황이 계속 바뀌었잖아요" }
+{ "t":"21:11:45", "speaker":"곰돌이", "round":3, "phase":"DAY_DISCUSSION", "text":"3번이 다 다른데요" }
+{ "t":"21:11:55", "speaker":"라면왕", "round":3, "phase":"DAY_DISCUSSION", "text":"저는 초코비 씨입니다" }
+{ "t":"21:12:05", "speaker":"초코비", "round":3, "phase":"DAY_DISCUSSION", "text":"두 분이 시민이면 저를 죽이면 지는 거예요 잘 생각하세요" }
+{ "t":"21:12:15", "speaker":"곰돌이", "round":3, "phase":"DAY_DISCUSSION", "text":"아니요 지금 이기는 거예요" }
+{ "t":"21:12:45", "speaker":"라면왕", "round":3, "phase":"DAY_DISCUSSION", "text":"더 할 말 없으면 투표하죠" }
+{ "t":"21:13:10", "speaker":"곰돌이", "round":3, "phase":"DAY_VOTE", "text":"초코피 씨" }
+{ "t":"21:13:15", "speaker":"라면왕", "round":3, "phase":"DAY_VOTE", "text":"초코비 씨" }
+{ "t":"21:13:25", "speaker":"초코비", "round":3, "phase":"DAY_VOTE", "text":"저는 라면왕 씨요" }
+{ "t":"21:13:40", "speaker":"초코비", "round":3, "phase":"FINAL_DEFENSE", "text":"제가 죽으면 게임이 끝나요 그러니까 잘 생각하세요" }
+{ "t":"21:13:55", "speaker":"초코비", "round":3, "phase":"FINAL_DEFENSE", "text":"저는 시민입니다" }
+{ "t":"21:14:08", "speaker":"곰돌이", "round":3, "phase":"RESULT", "text":"끝났어요" }
